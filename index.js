@@ -136,8 +136,8 @@ function getWelcomeResponse(callback) {
     // If we wanted to initialize the session to have some attributes we could add those here.
     var sessionAttributes = {};
     var cardTitle = "Welcome";
-    var speechOutput = "Welcome to Hidden Gems!" +
-        "Please ask for recommendations about places around, for example: what's good around here?";
+    var speechOutput = "<s>Welcome to the Gastro Club! The best club of all clubs. </s>" +
+        "<s>Great recommendations from locals are waiting for you</s><s>just ask!</s>";
     // If the user either does not reply to the welcome message or says something that is not
     // understood, they will be prompted again with this text.
     var repromptText = "Please ask for recommendations about places around, " +
@@ -150,7 +150,7 @@ function getWelcomeResponse(callback) {
 
 function handleSessionEndRequest(callback) {
     var cardTitle = "Session Ended";
-    var speechOutput = "Thank you for using Hidden Gems. Have a nice day!";
+    var speechOutput = "Thank you for using the Gastro Club. Have a nice day!";
     // Setting this to true ends the session and exits the skill.
     var shouldEndSession = true;
 
@@ -211,7 +211,7 @@ function reportDataToUser(intent, session, db, googlePlaceID, callback) {
     getGoogleSpecificPlace().then(function(locData) {
         db.collection('Users').updateOne({user_id: '1234'}, {$set: {google_place_info: locData && locData.result}}, function(err, results) {
 
-            speechOutput = "You should get there in 4 minutes. Enjoy!";
+            speechOutput = "<s>You are on your way to " + locData.result.name + "!</s><s>Follow the directions on the screen, you should be there in 4 minutes.</s><s>Enjoy!</s>";
             repromptText = speechOutput;
             shouldEndSession = true;
             callback(session,
@@ -269,7 +269,7 @@ function setRecommendationsParams(intent, session, db, callback) {
         googleOpenData,
         ownRecommendations;
 
-    var PRICE_LEVELS = ["", "inexpensive", "relatively inexpensive", "quite expensive", "very expensive"];
+    var PRICE_LEVELS = ["", "affordable", "relatively inexpensive", "quite expensive", "very expensive"];
 
     function getMyUserDetails() {
         return new Promise(function (resolve, reject) {
@@ -393,18 +393,22 @@ function setRecommendationsParams(intent, session, db, callback) {
 
 
     function prepOutput() {
-        speechOutput = "The wisdom of the crowd suggests " + topGoogleSuggestion.name + " on " + topGoogleSuggestion.vicinity.split(",")[0] + ". ";
+        speechOutput = "<p>" +
+            "<s>The locals' favorite is " + topGoogleSuggestion.name + ", located on " + topGoogleSuggestion.vicinity.split(",")[0] + ". </s>";
         if (topGoogleSuggestion.price_level >= 3) {
-            speechOutput += "It is " + PRICE_LEVELS[topGoogleSuggestion.price_level] + " but it recieved " + topGoogleSuggestion.rating + " stars. ";
+            speechOutput += "<s>It is " + PRICE_LEVELS[topGoogleSuggestion.price_level] + ", but it received " + topGoogleSuggestion.rating + " stars. </s>";
         }
         else {
-            speechOutput += "It recieved " + topGoogleSuggestion.rating + " stars and is " + PRICE_LEVELS[topGoogleSuggestion.price_level] + ". ";
+            speechOutput += "<s>It recieved " + topGoogleSuggestion.rating + " stars and is " + PRICE_LEVELS[topGoogleSuggestion.price_level] + ". </s>";
         }
-        console.log("speechOutput1", speechOutput)
+        speechOutput+= "</p>";
+
         if (ownRecommendations.length > 0) {
             var friendRecommendation = ownRecommendations[0];
-            speechOutput += "<break time=\"700ms\"/>Your friend, " + friendRecommendation.first_name + ", recommends " + friendRecommendation.place_name + ", " +
-            "because of their " + friendRecommendation.like[0] + ". " + ((friendRecommendation.like.length > 1) ? "The " + friendRecommendation.like[1] + " is also very good. " : "");
+            speechOutput += "<p>" +
+                "<s>Your friend, " + friendRecommendation.first_name + ", recommends " + friendRecommendation.place_name + ", " +
+            "because of their great" + friendRecommendation.like[0] + ". </s>" + ((friendRecommendation.like.length > 1) ? "<s>The " + friendRecommendation.like[1] + " is also very good. </s>" : "");
+            speechOutput += "</p>";
         }
 
 
@@ -416,7 +420,7 @@ function setRecommendationsParams(intent, session, db, callback) {
             repromptText = "Would you like to go there now?";
         }
 
-        speechOutput += "<break time=\"700ms\"/>" + repromptText;
+        speechOutput += "<p><s>" + repromptText + "</s></p>";
 
         sessionAttributes.recommendations = {
             google: topGoogleSuggestion,
@@ -431,66 +435,6 @@ function setRecommendationsParams(intent, session, db, callback) {
     
 }
 
-
-
-/**
- * Sets the color in the session and prepares the speech to reply to the user.
- */
-// function setColorInSession(intent, session, callback) {
-//     var cardTitle = intent.name;
-//     var favoriteColorSlot = intent.slots.Color;
-//     var repromptText = "";
-//     var sessionAttributes = {};
-//     var shouldEndSession = false;
-//     var speechOutput = "";
-//
-//     if (favoriteColorSlot) {
-//         var favoriteColor = favoriteColorSlot.value;
-//         sessionAttributes = createFavoriteColorAttributes(favoriteColor);
-//         speechOutput = "I now know your favorite color is " + favoriteColor + ". You can ask me " +
-//             "your favorite color by saying, what's my favorite color?";
-//         repromptText = "You can ask me your favorite color by saying, what's my favorite color?";
-//     } else {
-//         speechOutput = "I'm not sure what your favorite color is. Please try again";
-//         repromptText = "I'm not sure what your favorite color is. You can tell me your " +
-//             "favorite color by saying, my favorite color is red";
-//     }
-//
-//     callback(sessionAttributes,
-//         buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
-// }
-//
-// function createFavoriteColorAttributes(favoriteColor) {
-//     return {
-//         favoriteColor: favoriteColor
-//     };
-// }
-//
-// function getColorFromSession(intent, session, callback) {
-//     var favoriteColor;
-//     var repromptText = null;
-//     var sessionAttributes = {};
-//     var shouldEndSession = false;
-//     var speechOutput = "";
-//
-//     if (session.attributes) {
-//         favoriteColor = session.attributes.favoriteColor;
-//     }
-//
-//     if (favoriteColor) {
-//         speechOutput = "Your favorite color is " + favoriteColor + ". Goodbye.";
-//         shouldEndSession = true;
-//     } else {
-//         speechOutput = "I'm not sure what your favorite color is, you can say, my favorite color " +
-//             " is red";
-//     }
-//
-//     // Setting repromptText to null signifies that we do not want to reprompt the user.
-//     // If the user does not respond or says something that is not understood, the session
-//     // will end.
-//     callback(sessionAttributes,
-//         buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
-// }
 
 // --------------- Helpers that build all of the responses -----------------------
 
