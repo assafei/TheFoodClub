@@ -160,7 +160,7 @@ function handleSessionEndRequest(callback) {
 /**
  * Sets the parameters in the session and prepares the speech to reply to the user.
  */
-function reportDataToUser(intent, session, db, googlePlaceID, callback) {
+function reportDataToUser(intent, session, db, googlePlaceID, specific_recommendation, callback) {
     var cardTitle = intent.name;
     var shouldEndSession = false;
     var speechOutput, repromptText;
@@ -209,9 +209,12 @@ function reportDataToUser(intent, session, db, googlePlaceID, callback) {
     }
 
     getGoogleSpecificPlace().then(function(locData) {
-        db.collection('Users').updateOne({user_id: '1234'}, {$set: {google_place_info: locData && locData.result}}, function(err, results) {
-
-            speechOutput = "<s>You are on your way to " + locData.result.name + "!</s><s>Follow the directions on the screen, you should be there in 4 minutes.</s><s>Enjoy!</s>";
+        db.collection('Users').updateOne({user_id: '1234'}, {$set: {google_place_info: locData && locData.result, google_place_info_assaf: locData}}, function(err, results) {
+            speechOutput =
+                "<s>Great!</s>" +
+                "<s>You are on your way to " + locData.result.name + "!</s>" +
+                "<s>Follow the directions on the screen and you should be there in 4 minutes.</s>" +
+                "<s>Enjoy!</s>" + (specific_recommendation ? "<s>and don't forget to try the " + specific_recommendation + "... </s>" : "");
             repromptText = speechOutput;
             shouldEndSession = true;
             callback(session,
