@@ -397,27 +397,32 @@ function setRecommendationsParams(intent, session, db, callback) {
 
     function prepOutput() {
         speechOutput = "<p>" +
-            "<s>The locals' favorite is " + topGoogleSuggestion.name + ", located on " + topGoogleSuggestion.vicinity.split(",")[0] + ". </s>";
+            "<s>" +
+                "The locals' favorite is " + topGoogleSuggestion.name +
+            // ", located on " + topGoogleSuggestion.vicinity.split(",")[0] +
+            ". </s>";
         if (topGoogleSuggestion.price_level >= 3) {
             speechOutput += "<s>It is " + PRICE_LEVELS[topGoogleSuggestion.price_level] + ", but it received " + topGoogleSuggestion.rating + " stars. </s>";
         }
         else {
-            speechOutput += "<s>It recieved " + topGoogleSuggestion.rating + " stars and is " + PRICE_LEVELS[topGoogleSuggestion.price_level] + ". </s>";
+            speechOutput += "<s>It received " + topGoogleSuggestion.rating + " stars and is also " + PRICE_LEVELS[topGoogleSuggestion.price_level] + ". </s>";
         }
         speechOutput+= "</p>";
 
         if (ownRecommendations.length > 0) {
             var friendRecommendation = ownRecommendations[0];
             speechOutput += "<p>" +
-                "<s>Your friend, " + friendRecommendation.first_name + ", recommends " + friendRecommendation.place_name + ", " +
-            "because of their great" + friendRecommendation.like[0] + ". </s>" + ((friendRecommendation.like.length > 1) ? "<s>The " + friendRecommendation.like[1] + " is also very good. </s>" : "");
+                "<s>Your friend, " + friendRecommendation.first_name + ", recommends " + friendRecommendation.place_name + " " +
+            "for their great" + friendRecommendation.like[0] + ". </s>"
+                // + ((friendRecommendation.like.length > 1) ? "<s>The " + friendRecommendation.like[1] + " is also very good. </s>" : "")
+                ;
             speechOutput += "</p>";
         }
 
 
         // "I found " + goodGoogleSuggestions.length + " recommendation on Google and " + ownRecommendations.length + " from your friends";
         if (ownRecommendations.length > 0) {
-            repromptText = "Would you prefer the first option or second option?";
+            repromptText = "Do either of these sound good?";
         }
         else {
             repromptText = "Would you like to go there now?";
