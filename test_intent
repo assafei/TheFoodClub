@@ -1,0 +1,58 @@
+{
+  "session": {
+    "new": false,
+    "sessionId": "session1234",
+    "attributes": {},
+    "user": {
+      "userId": null
+    },
+    "application": {
+      "applicationId": "amzn1.echo-sdk-ams.app.c67abc39-6b53-44bb-9f56-24c5ddc7d18e"
+    }
+  },
+  "version": "1.0",
+  "request": {
+    "intent": {
+      "slots": {
+        "Distance": {
+          "name": "Distance",
+          "value": "near by"
+        },
+        "TypeOfFood": {
+          "name": "TypeOfFood",
+          "value": ""
+        },
+        "PriceRange": {
+          "name": "PriceRange",
+          "value": ""
+        }
+
+      },
+      "name": "AskForRecommendationIntent"
+    },
+    "type": "IntentRequest",
+    "requestId": "request5678"
+  }
+}
+
+{
+  "session": {
+    "new": false,
+    "sessionId": "session1234",
+    "attributes": {},
+    "user": {
+      "userId": null
+    },
+    "application": {
+      "applicationId": "amzn1.echo-sdk-ams.app.c67abc39-6b53-44bb-9f56-24c5ddc7d18e"
+    }
+  },
+  "version": "1.0",
+  "request": {
+    "intent": {
+      "name": "FirstOptionIntent"
+    },
+    "type": "IntentRequest",
+    "requestId": "request56788"
+  }
+}

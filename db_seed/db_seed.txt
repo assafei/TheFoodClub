@@ -1,0 +1,28 @@
+# Recommendations
+{
+  _id: ObjectId("572e6cf683168e23d74e57b1"),
+  first_name: "Sandy",
+  last_name: "Barnabas",
+  location_info: {
+    lat: 40.750333,
+    lng: 73.978333
+  },
+  place_id: "1",
+  like: [
+    "burgers",
+    "beer"
+  ],
+  dislike: [
+    "service"
+  ]
+}
+
+// Users
+{
+  "_id" : ObjectId("572e8482efdd3f1dd8644dd5"),
+  "user_id" : "1234",
+  "loc" : [
+    -73.985195,
+    40.758862
+  ]
+}
