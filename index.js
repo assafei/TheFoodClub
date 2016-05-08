@@ -227,14 +227,14 @@ function chooseGoogleOption(intent, session, db, callback) {
 
     var place_id = session.attributes && session.attributes.recommendations && session.attributes.recommendations.google && session.attributes.recommendations.google.place_id;
 
-    reportDataToUser(intent,session, db, place_id, callback);
+    reportDataToUser(intent,session, db, place_id, undefined, callback);
 
 }
 function chooseFriendOption(intent, session, db, callback) {
 
     var place_id = session.attributes && session.attributes.recommendations && session.attributes.recommendations.friend && session.attributes.recommendations.friend.place_id;
-
-    reportDataToUser(intent,session, db, place_id, callback);
+    var recommendation = place_id ? (session.attributes.recommendations.friend.like[0]) : undefined;
+    reportDataToUser(intent,session, db, place_id, recommendation, callback);
 
 }
 
